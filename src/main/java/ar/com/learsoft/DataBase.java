@@ -22,27 +22,27 @@ import lombok.ToString;
 @Entity
 @Table(name= "AFIP_CHECKER")
 public class DataBase implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	private int ID;
+	@Column (name ="ID_CLIENTE")
+	private int idCliente;
+	
+	@Column (name = "TIME")
+	private Long time;
+	@Column (name ="SERVICE_STATUS")
+	private String status;
+	
+	public DataBase() {
+		super();
+	}
 
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private int ID;
-    @Column (name ="ID_CLIENTE")
-    private int idCliente;
-
-    @Column (name = "TIME")
-    private Long time;
-    @Column (name ="SERVICE_STATUS")
-    private String status;
-
-    public DataBase() {
-        super();
-    }
-
-
-    public void saveData(Client client, ServiceResponse serviceResponse) {
-        this.setID(client.getId());
-        this.setStatus(serviceResponse.getStatus());
-        this.setTime(serviceResponse.getTimestamp());
-    }
+	
+	public void saveData(Client client, ServiceResponse serviceResponse) {
+		this.setID(client.getId());
+		this.setStatus(serviceResponse.getStatus());
+		this.setTime(serviceResponse.getTimestamp());
+	}
 }
