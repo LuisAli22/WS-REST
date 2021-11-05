@@ -16,7 +16,7 @@ public class AppConfig {
 	@Bean
 	ServletRegistrationBean h2servletRegistration() {
 		ServletRegistrationBean registrationBean = new ServletRegistrationBean(new WebServlet());
-		registrationBean.addUrlMappings("/checkservice/*");
+		registrationBean.addUrlMappings("/checkservice");
 		return registrationBean;
 	}
 
