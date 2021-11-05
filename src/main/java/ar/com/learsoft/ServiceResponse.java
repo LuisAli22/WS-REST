@@ -8,4 +8,9 @@ import lombok.Setter;
 public class ServiceResponse {
 	private long timestamp;
 	private String status;
+	public ServiceResponse(long timestamp, String status) {
+		this.timestamp = timestamp;
+		this.status = status;
+	}
+	
 }
