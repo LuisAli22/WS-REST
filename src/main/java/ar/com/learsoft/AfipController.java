@@ -20,7 +20,7 @@ public class AfipController {
 	private final static Logger LOGGER = Logger.getLogger("AfipController");
 	@PostMapping("/checkservice")
 	public ServiceResponse checkService(@RequestBody Client client) {
-		LOGGER.log(Level.INFO, "AfipController (checkService): Recibo el id: ", client.getId());
+		LOGGER.log(Level.INFO, "AfipController (checkService): Recibo el id: " + client.getId());
 		ServiceResponse serviceResponse= new ServiceResponse();
 		serviceResponse.setTimestamp(new Date().getTime());
 		DataBase data = new DataBase();
