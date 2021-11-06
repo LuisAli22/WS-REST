@@ -8,7 +8,7 @@ public class AfipRestWebServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AfipRestWebServiceApplication.class, args);
-		
+
 	}
 
 }

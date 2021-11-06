@@ -1,4 +1,4 @@
-package ar.com.learsoft.soap;
+package ar.com.learsoft.soap.ws;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
