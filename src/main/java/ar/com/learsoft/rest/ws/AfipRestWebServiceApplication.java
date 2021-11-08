@@ -1,4 +1,4 @@
-package ar.com.learsoft;
+package ar.com.learsoft.rest.ws;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,7 +8,7 @@ public class AfipRestWebServiceApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(AfipRestWebServiceApplication.class, args);
-		
+
 	}
 
 }

@@ -1,6 +1,4 @@
-package ar.com.learsoft;
-
-
+package ar.com.learsoft.rest.ws.model;
 
 import lombok.Getter;
 import lombok.Setter;
