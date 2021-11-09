@@ -8,10 +8,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ServiceResponseGraceful extends ServiceResponse {
+public class GracefulInputResponse extends ServiceResponse {
 	private long timestamp;
 
-	public ServiceResponseGraceful(String status) {
+	public GracefulInputResponse(String status) {
 		super(status);
 		this.timestamp = this.time();
 	}

@@ -5,10 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ServiceResponseError extends ServiceResponse{
+public class InvalidInputResponse extends ServiceResponse{
 	private StringBuilder errorMessages; 
 
-	public ServiceResponseError(StringBuilder errorMessages) {
+	public InvalidInputResponse(StringBuilder errorMessages) {
 		super("CLIENTE INCORRECTO");
 		this.errorMessages = errorMessages; 
 	}
