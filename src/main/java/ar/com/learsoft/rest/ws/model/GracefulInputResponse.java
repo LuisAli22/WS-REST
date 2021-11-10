@@ -2,6 +2,9 @@ package ar.com.learsoft.rest.ws.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +13,7 @@ import lombok.Setter;
 @Setter
 public class GracefulInputResponse extends ServiceResponse {
 	private long timestamp;
+	private List<ServiceStatus> queryResults;
 
 	public GracefulInputResponse(String status) {
 		super(status);
@@ -19,5 +23,10 @@ public class GracefulInputResponse extends ServiceResponse {
 		String time2 = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(System.currentTimeMillis()));
 		Long time = Long.parseLong(time2);
 		return time;
+	}
+	public GracefulInputResponse(String status, List<ServiceStatus> queryResults) {
+		super(status);
+		this.queryResults = queryResults;
+		this.timestamp= this.time();
 	}
 }

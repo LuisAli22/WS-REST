@@ -2,6 +2,7 @@ package ar.com.learsoft.rest.ws.afipservice;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -13,21 +14,20 @@ import javax.validation.Validator;
 import javax.xml.namespace.QName;
 
 import ar.com.learsoft.rest.ws.connection.ServiceStatusDataBaseDAOImpl;
-import ar.com.learsoft.rest.ws.connection.ServiceStatusDataBaseRepository;
 import ar.com.learsoft.rest.ws.model.Client;
 import ar.com.learsoft.rest.ws.model.GracefulInputResponse;
-import ar.com.learsoft.rest.ws.model.InvalidInputResponse;
 import ar.com.learsoft.rest.ws.model.ServiceResponse;
 import ar.com.learsoft.rest.ws.model.ServiceStatus;
 import ar.com.learsoft.soap.ws.ServiceChecker;
 
 @Service
 public class AfipService {
-	@Autowired
-	private ServiceStatusDataBaseRepository serviceStatusDataBaseRepository;
 	
 	@Autowired
 	private Validator validator;
+	
+	@Autowired
+	private ServiceStatusDataBaseDAOImpl serviceStatusDataBaseDAOImpl; 
 	
 	private ServiceChecker getWsSoapProxy() {
 		URL url= null;
@@ -43,40 +43,30 @@ public class AfipService {
 		return service.getPort(portName, ServiceChecker.class);
 	}
 	
-//	private StringBuilder getAllErrorMessages(Set<ConstraintViolation<Client>> violations) {
-//		StringBuilder allErrorMessages = new StringBuilder();
-//		for (ConstraintViolation<Client> constraintViolation : violations) {
-//			allErrorMessages.append(constraintViolation.getMessage());
-//		}
-//		return allErrorMessages;
-//	}
 	private GracefulInputResponse getResponseFromWsSoap() {
 		ServiceChecker wsSoapProxy= getWsSoapProxy();
 		String afipServiceStatus= wsSoapProxy.getStatus();
 		return new GracefulInputResponse(afipServiceStatus);
 	}
-	private void storeResultInDataBase(GracefulInputResponse gracefulInputResponse, Client client) {
-		ServiceStatus serviceStatus = new ServiceStatus();
-		ServiceStatusDataBaseDAOImpl serviceStatusDataBase = new ServiceStatusDataBaseDAOImpl(serviceStatus, client,
-				gracefulInputResponse);
-		serviceStatusDataBaseRepository.save(serviceStatusDataBase.saveInDataBase());
-	}
 	
 	public GracefulInputResponse getResponseFromSoapAndStoreItInDataBase(Client client) {
 		GracefulInputResponse gracefulInputResponse = this.getResponseFromWsSoap();
-		storeResultInDataBase(gracefulInputResponse, client);
+		serviceStatusDataBaseDAOImpl.saveInDataBase(client, gracefulInputResponse);
 		return gracefulInputResponse;
 	}
-
-	public ServiceResponse check(Client client) {
+	private void validateClient(Client client) {
 		Set<ConstraintViolation<Client>> violations = validator.validate(client);
 		if (!violations.isEmpty()) {
-//			StringBuilder allErrorMessages = this.getAllErrorMessages(violations);
-//			return new InvalidInputResponse(allErrorMessages);
 			throw new ConstraintViolationException(violations);
 
 		}
+	}
+	public ServiceResponse check(Client client) {
+		this.validateClient(client);
 		return getResponseFromSoapAndStoreItInDataBase(client);
 	}
-
+	public List<ServiceStatus> searchByApplicationId(Client client){
+		this.validateClient(client);
+		return serviceStatusDataBaseDAOImpl.searchByApplicationId(client);
+	}
 }
