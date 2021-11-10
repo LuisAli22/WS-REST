@@ -6,11 +6,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InvalidInputResponse extends ServiceResponse{
-	private StringBuilder errorMessages; 
+	private String message; 
 
-	public InvalidInputResponse(StringBuilder errorMessages) {
+	public InvalidInputResponse(String message) {
 		super("CLIENTE INCORRECTO");
-		this.errorMessages = errorMessages; 
+		this.message = message; 
 	}
 
 }

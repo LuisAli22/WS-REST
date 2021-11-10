@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,11 +28,7 @@ public class AfipService {
 	
 	@Autowired
 	private Validator validator;
-	private ServiceChecker wsSoapProxy;
 	
-	public AfipService() {
-		wsSoapProxy = getWsSoapProxy();
-	}
 	private ServiceChecker getWsSoapProxy() {
 		URL url= null;
 		try {
@@ -46,14 +43,15 @@ public class AfipService {
 		return service.getPort(portName, ServiceChecker.class);
 	}
 	
-	private StringBuilder getAllErrorMessages(Set<ConstraintViolation<Client>> violations) {
-		StringBuilder allErrorMessages = new StringBuilder();
-		for (ConstraintViolation<Client> constraintViolation : violations) {
-			allErrorMessages.append(constraintViolation.getMessage());
-		}
-		return allErrorMessages;
-	}
+//	private StringBuilder getAllErrorMessages(Set<ConstraintViolation<Client>> violations) {
+//		StringBuilder allErrorMessages = new StringBuilder();
+//		for (ConstraintViolation<Client> constraintViolation : violations) {
+//			allErrorMessages.append(constraintViolation.getMessage());
+//		}
+//		return allErrorMessages;
+//	}
 	private GracefulInputResponse getResponseFromWsSoap() {
+		ServiceChecker wsSoapProxy= getWsSoapProxy();
 		String afipServiceStatus= wsSoapProxy.getStatus();
 		return new GracefulInputResponse(afipServiceStatus);
 	}
@@ -69,11 +67,14 @@ public class AfipService {
 		storeResultInDataBase(gracefulInputResponse, client);
 		return gracefulInputResponse;
 	}
+
 	public ServiceResponse check(Client client) {
 		Set<ConstraintViolation<Client>> violations = validator.validate(client);
 		if (!violations.isEmpty()) {
-			StringBuilder allErrorMessages = this.getAllErrorMessages(violations);
-			return new InvalidInputResponse(allErrorMessages);
+//			StringBuilder allErrorMessages = this.getAllErrorMessages(violations);
+//			return new InvalidInputResponse(allErrorMessages);
+			throw new ConstraintViolationException(violations);
+
 		}
 		return getResponseFromSoapAndStoreItInDataBase(client);
 	}

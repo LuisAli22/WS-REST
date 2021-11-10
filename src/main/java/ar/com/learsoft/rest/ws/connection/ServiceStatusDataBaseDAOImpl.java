@@ -23,7 +23,7 @@ public class ServiceStatusDataBaseDAOImpl implements DAOServiceStatusDataBase {
 	@Override
 	public ServiceStatus saveInDataBase() {
 
-		this.serviceStatus.setIdCliente(client.getId());
+		this.serviceStatus.setIdCliente(client.getApplicationId());
 		this.serviceStatus.setStatus(this.serviceResponse.getStatus());
 		this.serviceStatus.setTime(serviceResponse.getTimestamp());
 		return this.serviceStatus;
