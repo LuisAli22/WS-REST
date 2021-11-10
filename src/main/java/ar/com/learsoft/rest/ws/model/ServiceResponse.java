@@ -1,10 +1,13 @@
 package ar.com.learsoft.rest.ws.model;
 
+import org.springframework.stereotype.Component;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+
 public class ServiceResponse {
 	private String status;
 
