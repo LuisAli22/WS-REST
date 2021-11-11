@@ -7,6 +7,7 @@ import ar.com.learsoft.rest.ws.afipservice.AfipService;
 import ar.com.learsoft.rest.ws.model.Client;
 import ar.com.learsoft.rest.ws.model.FindByDate;
 import ar.com.learsoft.rest.ws.model.GracefulInputResponse;
+import ar.com.learsoft.rest.ws.model.GracefulInputResponseQueryResult;
 import ar.com.learsoft.rest.ws.model.InvalidInputResponse;
 import ar.com.learsoft.rest.ws.model.ServiceResponse;
 
@@ -45,27 +46,27 @@ public class AfipController {
 
 	@GetMapping("/findbyapplicationid/")
 	public ResponseEntity<ServiceResponse> findByApplicationId(@RequestBody Client client) {
-		GracefulInputResponse gracefulInputResponse = null;
+		GracefulInputResponseQueryResult gracefulInputResponseQueryResult = null;
 		try {
 			List<ServiceStatus> list = afipService.searchByApplicationId(client);
 			String status = "Se encontraron resultados";
-			gracefulInputResponse = new GracefulInputResponse(status, list);
+			gracefulInputResponseQueryResult = new GracefulInputResponseQueryResult(status, list);
 		} catch (ConstraintViolationException constraintViolationException) {
 			String message = constraintViolationException.getMessage();
 			String status = "Consulta sin resultados";
 			InvalidInputResponse invalidInputResponse = new InvalidInputResponse(status, message);
 			return ResponseEntity.badRequest().body(invalidInputResponse);
 		}
-		return ResponseEntity.ok().body(gracefulInputResponse);
+		return ResponseEntity.ok().body(gracefulInputResponseQueryResult);
 	}
 
 	@GetMapping("/findbydate/")
 	public ResponseEntity<ServiceResponse>findByDate(@RequestBody FindByDate findByDate){
-		GracefulInputResponse gracefulInputResponse = null;
+		GracefulInputResponseQueryResult gracefulInputResponseQueryResult = null;
 		try {
 			List<ServiceStatus> List = afipService.findByDate(findByDate.getFirstDate(), findByDate.getSecondDate());
 			String status = "Se encontraron resultados";
-			gracefulInputResponse = new GracefulInputResponse(status,List);
+			gracefulInputResponseQueryResult = new GracefulInputResponseQueryResult(status,List);
 		}catch (ConstraintViolationException constraintViolationException) {
 			String message = constraintViolationException.getMessage();
 			String status = "Consulta sin resultados";
@@ -73,7 +74,7 @@ public class AfipController {
 			return ResponseEntity.badRequest().body(invalidInputResponse);
 		}
 	
-		return ResponseEntity.ok().body(gracefulInputResponse);
+		return ResponseEntity.ok().body(gracefulInputResponseQueryResult);
 		
 		
 	}
