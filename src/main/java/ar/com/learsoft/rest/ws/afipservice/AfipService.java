@@ -22,15 +22,15 @@ import ar.com.learsoft.soap.ws.ServiceChecker;
 
 @Service
 public class AfipService {
-	
+
 	@Autowired
 	private Validator validator;
-	
+
 	@Autowired
-	private ServiceStatusDataBaseDAOImpl serviceStatusDataBaseDAOImpl; 
-	
+	private ServiceStatusDataBaseDAOImpl serviceStatusDataBaseDAOImpl;
+
 	private ServiceChecker getWsSoapProxy() {
-		URL url= null;
+		URL url = null;
 		try {
 			url = new URL("http://localhost:8080/ws/afipchecker?wsdl");
 		} catch (MalformedURLException e) {
@@ -42,18 +42,19 @@ public class AfipService {
 		javax.xml.ws.Service service = javax.xml.ws.Service.create(url, serviceName);
 		return service.getPort(portName, ServiceChecker.class);
 	}
-	
+
 	private GracefulInputResponse getResponseFromWsSoap() {
-		ServiceChecker wsSoapProxy= getWsSoapProxy();
-		String afipServiceStatus= wsSoapProxy.getStatus();
+		ServiceChecker wsSoapProxy = getWsSoapProxy();
+		String afipServiceStatus = wsSoapProxy.getStatus();
 		return new GracefulInputResponse(afipServiceStatus);
 	}
-	
+
 	public GracefulInputResponse getResponseFromSoapAndStoreItInDataBase(Client client) {
 		GracefulInputResponse gracefulInputResponse = this.getResponseFromWsSoap();
 		serviceStatusDataBaseDAOImpl.saveInDataBase(client, gracefulInputResponse);
 		return gracefulInputResponse;
 	}
+
 	private void validateClient(Client client) {
 		Set<ConstraintViolation<Client>> violations = validator.validate(client);
 		if (!violations.isEmpty()) {
@@ -61,12 +62,20 @@ public class AfipService {
 
 		}
 	}
+
 	public ServiceResponse check(Client client) {
 		this.validateClient(client);
 		return getResponseFromSoapAndStoreItInDataBase(client);
 	}
-	public List<ServiceStatus> searchByApplicationId(Client client){
+
+	public List<ServiceStatus> searchByApplicationId(Client client) {
 		this.validateClient(client);
 		return serviceStatusDataBaseDAOImpl.searchByApplicationId(client);
 	}
+
+	public List<ServiceStatus> findByDate(Long firstDate, Long secondDate) {
+		return serviceStatusDataBaseDAOImpl.findByDate(firstDate, secondDate);
+
+	}
+
 }

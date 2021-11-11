@@ -40,9 +40,17 @@ public class ServiceStatusDataBaseDAOImpl {
 	}
 	
 	public List<ServiceStatus> searchByApplicationId(Client client) {            
-		String hql = "SELECT e FROM ServiceStatus e WHERE ID_CLIENTE IN ?1";             
-		System.out.println(client.getApplicationId());             
+		String hql = "SELECT e FROM ServiceStatus e WHERE ID_CLIENTE IN ?1";                        
 		TypedQuery<ServiceStatus> query = entityManager.createQuery(hql, ServiceStatus.class).setParameter(1, client.getApplicationId());
+		return query.getResultList();
+	}
+	
+	
+	public List<ServiceStatus>findByDate(Long firstDate, Long secondDate) {
+		String hql = "SELECT e FROM ServiceStatus e WHERE TIME BETWEEN ?1 AND ?2";
+		TypedQuery<ServiceStatus> query = entityManager.createQuery(hql, ServiceStatus.class);
+		query.setParameter(1, firstDate);
+		query.setParameter(2, secondDate);
 		return query.getResultList();
 	}
 }
