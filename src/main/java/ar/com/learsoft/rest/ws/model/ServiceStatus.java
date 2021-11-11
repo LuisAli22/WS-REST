@@ -26,8 +26,8 @@ public class ServiceStatus implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int ID;
-	@Column(name = "ID_CLIENTE")
-	private int idCliente;
+	@Column(name = "APPLICATION_ID")
+	private String applicationID;
 	@Column(name = "TIME")
 	private Long time;
 	@Column(name = "SERVICE_STATUS")
