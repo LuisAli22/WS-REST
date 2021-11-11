@@ -14,6 +14,6 @@ import lombok.Setter;
 public class Client {
 	@NotNull(message = "El identificador de la aplicación No puede ser nulo")
 	@Pattern(regexp = "^(10|[1-9])$", message = "El identificador de la aplicacion debe ser un número  >=1 y <=10")
-	private String applicationId;
+	private String applicationID;
 
 }

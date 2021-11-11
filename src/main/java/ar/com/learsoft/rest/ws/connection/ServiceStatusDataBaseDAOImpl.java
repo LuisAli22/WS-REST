@@ -29,7 +29,7 @@ public class ServiceStatusDataBaseDAOImpl {
 
 	public void saveInDataBase(Client client, GracefulInputResponse serviceResponse) {
 		this.serviceStatus= new ServiceStatus();
-		this.serviceStatus.setIdCliente(client.getApplicationId());
+		this.serviceStatus.setApplicationID(client.getApplicationID());
 		this.serviceStatus.setStatus(serviceResponse.getStatus());
 		this.serviceStatus.setTime(serviceResponse.getTimestamp());
 		serviceStatusDataBaseRepository.save(this.serviceStatus);
@@ -40,8 +40,8 @@ public class ServiceStatusDataBaseDAOImpl {
 	}
 	
 	public List<ServiceStatus> searchByApplicationId(Client client) {            
-		String hql = "SELECT e FROM ServiceStatus e WHERE ID_CLIENTE IN ?1";                        
-		TypedQuery<ServiceStatus> query = entityManager.createQuery(hql, ServiceStatus.class).setParameter(1, client.getApplicationId());
+		String hql = "SELECT e FROM ServiceStatus e WHERE APPLICATION_ID IN ?1";                        
+		TypedQuery<ServiceStatus> query = entityManager.createQuery(hql, ServiceStatus.class).setParameter(1, client.getApplicationID());
 		return query.getResultList();
 	}
 	
