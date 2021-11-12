@@ -1,6 +1,7 @@
 package ar.com.learsoft.rest.ws.connection;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -46,11 +47,24 @@ public class ServiceStatusDataBaseDAOImpl {
 	}
 	
 	
-	public List<ServiceStatus>findByDate(Long firstDate, Long secondDate) {
+	public List<ServiceStatus>findByDate(Map<String,String> findByDateQueryParams) {
+		String firstDate= findByDateQueryParams.get("firstDate");
+		String secondDate= findByDateQueryParams.get("secondDate");
 		String hql = "SELECT e FROM ServiceStatus e WHERE TIME BETWEEN ?1 AND ?2";
 		TypedQuery<ServiceStatus> query = entityManager.createQuery(hql, ServiceStatus.class);
 		query.setParameter(1, firstDate);
 		query.setParameter(2, secondDate);
+		return query.getResultList();
+	}
+	public List<ServiceStatus>findByIdAndDate(Map<String,String> findByDateQueryParams) {
+		String applicationId= findByDateQueryParams.get("applicationId");
+		String firstDate= findByDateQueryParams.get("firstDate");
+		String secondDate= findByDateQueryParams.get("secondDate");
+		String hql = "SELECT e FROM ServiceStatus e WHERE APPLICATION_ID= ?1 AND TIME BETWEEN ?2 AND ?3";
+		TypedQuery<ServiceStatus> query = entityManager.createQuery(hql, ServiceStatus.class);
+		query.setParameter(1, applicationId);
+		query.setParameter(2, firstDate);
+		query.setParameter(3, secondDate);
 		return query.getResultList();
 	}
 }
