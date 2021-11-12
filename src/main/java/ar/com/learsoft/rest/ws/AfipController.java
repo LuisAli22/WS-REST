@@ -4,12 +4,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import ar.com.learsoft.rest.ws.model.ServiceStatus;
 import ar.com.learsoft.rest.ws.afipservice.AfipService;
+import ar.com.learsoft.rest.ws.exception.GracefulInputResponseQueryResult;
+import ar.com.learsoft.rest.ws.exception.GracefulInputResponseQueryResultException;
+import ar.com.learsoft.rest.ws.exception.InvalidInputResponse;
+import ar.com.learsoft.rest.ws.exception.ServiceResponse;
 import ar.com.learsoft.rest.ws.model.Client;
 import ar.com.learsoft.rest.ws.model.FindByDate;
-import ar.com.learsoft.rest.ws.model.GracefulInputResponse;
-import ar.com.learsoft.rest.ws.model.GracefulInputResponseQueryResult;
-import ar.com.learsoft.rest.ws.model.InvalidInputResponse;
-import ar.com.learsoft.rest.ws.model.ServiceResponse;
 
 import java.util.List;
 
@@ -53,9 +53,10 @@ public class AfipController {
 			gracefulInputResponseQueryResult = new GracefulInputResponseQueryResult(status, list);
 		} catch (ConstraintViolationException constraintViolationException) {
 			String message = constraintViolationException.getMessage();
-			String status = "Consulta sin resultados";
-			InvalidInputResponse invalidInputResponse = new InvalidInputResponse(status, message);
+			InvalidInputResponse invalidInputResponse = new InvalidInputResponse(message);
 			return ResponseEntity.badRequest().body(invalidInputResponse);
+		}catch (GracefulInputResponseQueryResultException gracefulInputResponseQueryResultsNullResults ) {
+			return ResponseEntity.noContent().build();
 		}
 		return ResponseEntity.ok().body(gracefulInputResponseQueryResult);
 	}
@@ -67,11 +68,11 @@ public class AfipController {
 			List<ServiceStatus> List = afipService.findByDate(findByDate.getFirstDate(), findByDate.getSecondDate());
 			String status = "Se encontraron resultados";
 			gracefulInputResponseQueryResult = new GracefulInputResponseQueryResult(status,List);
-		}catch (ConstraintViolationException constraintViolationException) {
-			String message = constraintViolationException.getMessage();
-			String status = "Consulta sin resultados";
-			InvalidInputResponse invalidInputResponse = new InvalidInputResponse(status, message);
-			return ResponseEntity.badRequest().body(invalidInputResponse);
+		}catch (GracefulInputResponseQueryResultException gracefulInputResponseQueryResultNullResults) {
+			String message = gracefulInputResponseQueryResultNullResults.getMessage();
+			InvalidInputResponse invalidInputResponse = new InvalidInputResponse(message);
+			System.out.println(message);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(invalidInputResponse);
 		}
 	
 		return ResponseEntity.ok().body(gracefulInputResponseQueryResult);

@@ -1,6 +1,5 @@
-package ar.com.learsoft.rest.ws.model;
+package ar.com.learsoft.rest.ws.exception;
 
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;

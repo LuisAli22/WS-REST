@@ -9,8 +9,8 @@ import javax.persistence.TypedQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import ar.com.learsoft.rest.ws.exception.GracefulInputResponse;
 import ar.com.learsoft.rest.ws.model.Client;
-import ar.com.learsoft.rest.ws.model.GracefulInputResponse;
 import ar.com.learsoft.rest.ws.model.ServiceStatus;
 import lombok.Getter;
 import lombok.Setter;
