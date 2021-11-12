@@ -12,6 +12,7 @@ import ar.com.learsoft.rest.ws.model.Client;
 import ar.com.learsoft.rest.ws.model.FindByDate;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.ConstraintViolationException;
 import javax.xml.ws.WebServiceException;
@@ -20,8 +21,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class AfipController {
@@ -61,22 +64,33 @@ public class AfipController {
 		return ResponseEntity.ok().body(gracefulInputResponseQueryResult);
 	}
 
-	@GetMapping("/findbydate/")
-	public ResponseEntity<ServiceResponse>findByDate(@RequestBody FindByDate findByDate){
+	@GetMapping("/findbydate/{firstDate}/{secondDate}")
+	public ResponseEntity<ServiceResponse>findByDate(@PathVariable Map<String,String> findByDateQueryParams){
 		GracefulInputResponseQueryResult gracefulInputResponseQueryResult = null;
 		try {
-			List<ServiceStatus> List = afipService.findByDate(findByDate.getFirstDate(), findByDate.getSecondDate());
+			List<ServiceStatus> List = afipService.findByDate(findByDateQueryParams);
 			String status = "Se encontraron resultados";
 			gracefulInputResponseQueryResult = new GracefulInputResponseQueryResult(status,List);
 		}catch (GracefulInputResponseQueryResultException gracefulInputResponseQueryResultNullResults) {
 			String message = gracefulInputResponseQueryResultNullResults.getMessage();
 			InvalidInputResponse invalidInputResponse = new InvalidInputResponse(message);
-			System.out.println(message);
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).body(invalidInputResponse);
-		}
-	
+		}	
 		return ResponseEntity.ok().body(gracefulInputResponseQueryResult);
-		
-		
+	}
+	@GetMapping("/findbyidanddate/{applicationId}/{firstDate}/{secondDate}")
+	public ResponseEntity<ServiceResponse>findByIdAndDate(@PathVariable Map<String,String> findByDateQueryParams){
+		GracefulInputResponseQueryResult gracefulInputResponseQueryResult = null;
+		try {
+			List<ServiceStatus> List = afipService.findByIdAndDate(findByDateQueryParams);
+			String status = "Se encontraron resultados";
+			gracefulInputResponseQueryResult = new GracefulInputResponseQueryResult(status,List);
+		}catch (ConstraintViolationException constraintViolationException) {
+			String message = constraintViolationException.getMessage();
+			String status = "Consulta sin resultados";
+			InvalidInputResponse invalidInputResponse = new InvalidInputResponse(status, message);
+			return ResponseEntity.badRequest().body(invalidInputResponse);
+		}	
+		return ResponseEntity.ok().body(gracefulInputResponseQueryResult);
 	}
 }
