@@ -3,6 +3,7 @@ package ar.com.learsoft.rest.ws.afipservice;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -73,8 +74,12 @@ public class AfipService {
 		return serviceStatusDataBaseDAOImpl.searchByApplicationId(client);
 	}
 
-	public List<ServiceStatus> findByDate(Long firstDate, Long secondDate) {
-		return serviceStatusDataBaseDAOImpl.findByDate(firstDate, secondDate);
+	public List<ServiceStatus> findByDate(Map<String,String> findByDateQueryParams) {
+		return serviceStatusDataBaseDAOImpl.findByDate(findByDateQueryParams);
+
+	}
+	public List<ServiceStatus> findByIdAndDate(Map<String,String> findByDateQueryParams) {
+		return serviceStatusDataBaseDAOImpl.findByIdAndDate(findByDateQueryParams);
 
 	}
 
