@@ -15,10 +15,8 @@ import javax.validation.Validator;
 import javax.xml.namespace.QName;
 
 import ar.com.learsoft.rest.ws.connection.ServiceStatusDataBaseDAOImpl;
-import ar.com.learsoft.rest.ws.exception.GracefulInputResponse;
 import ar.com.learsoft.rest.ws.exception.ServiceResponse;
 import ar.com.learsoft.rest.ws.model.Client;
-import ar.com.learsoft.rest.ws.model.ServiceStatus;
 import ar.com.learsoft.soap.ws.ServiceChecker;
 
 @Service
@@ -35,7 +33,7 @@ public class AfipService {
 		try {
 			url = new URL("http://localhost:8080/ws/afipchecker?wsdl");
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 		QName serviceName = new QName("http://ws.soap.learsoft.com.ar/", "AfipServiceCheckerService");
@@ -44,16 +42,21 @@ public class AfipService {
 		return service.getPort(portName, ServiceChecker.class);
 	}
 
-	private GracefulInputResponse getResponseFromWsSoap() {
+	private ServiceResponse getResponseFromWsSoap() {
 		ServiceChecker wsSoapProxy = getWsSoapProxy();
 		String afipServiceStatus = wsSoapProxy.getStatus();
-		return new GracefulInputResponse(afipServiceStatus);
+		return new ServiceResponse(afipServiceStatus);
 	}
 
-	public GracefulInputResponse getResponseFromSoapAndStoreItInDataBase(Client client) {
-		GracefulInputResponse gracefulInputResponse = this.getResponseFromWsSoap();
-		serviceStatusDataBaseDAOImpl.saveInDataBase(client, gracefulInputResponse);
-		return gracefulInputResponse;
+	public ServiceResponse getResponseFromSoapAndStoreItInDataBase(Client client) {
+		ServiceResponse serviceResponse = this.getResponseFromWsSoap();
+		serviceStatusDataBaseDAOImpl.saveInDataBase(client, serviceResponse);
+		return serviceResponse;
+	}
+
+	public ServiceResponse check(Client client) {
+		this.validateClient(client);
+		return getResponseFromSoapAndStoreItInDataBase(client);
 	}
 
 	private void validateClient(Client client) {
@@ -64,21 +67,16 @@ public class AfipService {
 		}
 	}
 
-	public ServiceResponse check(Client client) {
-		this.validateClient(client);
-		return getResponseFromSoapAndStoreItInDataBase(client);
+	public List<ServiceResponse> searchByApplicationId(String applicationid) {
+		return serviceStatusDataBaseDAOImpl.searchByApplicationId(applicationid);
 	}
 
-	public List<ServiceStatus> searchByApplicationId(Client client) {
-		this.validateClient(client);
-		return serviceStatusDataBaseDAOImpl.searchByApplicationId(client);
-	}
-
-	public List<ServiceStatus> findByDate(Map<String,String> findByDateQueryParams) {
+	public List<ServiceResponse> findByDate(Map<String, String> findByDateQueryParams) {
 		return serviceStatusDataBaseDAOImpl.findByDate(findByDateQueryParams);
 
 	}
-	public List<ServiceStatus> findByIdAndDate(Map<String,String> findByDateQueryParams) {
+
+	public List<ServiceResponse> findByIdAndDate(Map<String, String> findByDateQueryParams) {
 		return serviceStatusDataBaseDAOImpl.findByIdAndDate(findByDateQueryParams);
 
 	}
