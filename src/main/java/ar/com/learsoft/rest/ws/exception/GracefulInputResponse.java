@@ -1,4 +1,4 @@
-package ar.com.learsoft.rest.ws.model;
+package ar.com.learsoft.rest.ws.exception;
 
 
 
@@ -7,6 +7,7 @@ import java.util.Date;
 
 import lombok.Getter;
 import lombok.Setter;
+
 
 @Getter
 @Setter

@@ -15,9 +15,9 @@ import javax.validation.Validator;
 import javax.xml.namespace.QName;
 
 import ar.com.learsoft.rest.ws.connection.ServiceStatusDataBaseDAOImpl;
+import ar.com.learsoft.rest.ws.exception.GracefulInputResponse;
+import ar.com.learsoft.rest.ws.exception.ServiceResponse;
 import ar.com.learsoft.rest.ws.model.Client;
-import ar.com.learsoft.rest.ws.model.GracefulInputResponse;
-import ar.com.learsoft.rest.ws.model.ServiceResponse;
 import ar.com.learsoft.rest.ws.model.ServiceStatus;
 import ar.com.learsoft.soap.ws.ServiceChecker;
 
