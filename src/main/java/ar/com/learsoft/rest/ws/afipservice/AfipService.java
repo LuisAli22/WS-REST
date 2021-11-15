@@ -2,6 +2,7 @@ package ar.com.learsoft.rest.ws.afipservice;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,14 +10,19 @@ import java.util.Set;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import javax.validation.Validator;
 import javax.xml.namespace.QName;
 
+import ar.com.learsoft.rest.ws.AfipController;
 import ar.com.learsoft.rest.ws.connection.ServiceStatusDataBaseDAOImpl;
 import ar.com.learsoft.rest.ws.exception.ServiceResponse;
-import ar.com.learsoft.rest.ws.model.Client;
+import ar.com.learsoft.rest.ws.model.ApplicationIdAfipServiceQuery;
+import ar.com.learsoft.rest.ws.model.BetweenDaysAndIdQuery;
+import ar.com.learsoft.rest.ws.model.BetweenDaysQuery;
 import ar.com.learsoft.soap.ws.ServiceChecker;
 
 @Service
@@ -27,6 +33,8 @@ public class AfipService {
 
 	@Autowired
 	private ServiceStatusDataBaseDAOImpl serviceStatusDataBaseDAOImpl;
+	
+	private Logger logger = LogManager.getLogger(AfipService.class);
 
 	private ServiceChecker getWsSoapProxy() {
 		URL url = null;
@@ -48,36 +56,56 @@ public class AfipService {
 		return new ServiceResponse(afipServiceStatus);
 	}
 
-	public ServiceResponse getResponseFromSoapAndStoreItInDataBase(Client client) {
+	public ServiceResponse getResponseFromSoapAndStoreItInDataBase(String applicationId) {
 		ServiceResponse serviceResponse = this.getResponseFromWsSoap();
-		serviceStatusDataBaseDAOImpl.saveInDataBase(client, serviceResponse);
+		serviceStatusDataBaseDAOImpl.saveInDataBase(applicationId, serviceResponse);
 		return serviceResponse;
 	}
 
-	public ServiceResponse check(Client client) {
-		this.validateClient(client);
-		return getResponseFromSoapAndStoreItInDataBase(client);
+	public ServiceResponse check(String applicationid) {
+		ApplicationIdAfipServiceQuery applicationIdAfipServiceQuery= new ApplicationIdAfipServiceQuery(); 
+		applicationIdAfipServiceQuery.setApplicationID(applicationid);
+		logger.info("Validando la consulta de chequeo de servicio");
+		this.validateAfipServiceQuery(applicationIdAfipServiceQuery);
+		return getResponseFromSoapAndStoreItInDataBase(applicationid);
 	}
 
-	private void validateClient(Client client) {
-		Set<ConstraintViolation<Client>> violations = validator.validate(client);
+	private void validateAfipServiceQuery(ApplicationIdAfipServiceQuery applicationIdAfipServiceQuery) {
+		Set<ConstraintViolation<ApplicationIdAfipServiceQuery>> violations = validator.validate(applicationIdAfipServiceQuery);
 		if (!violations.isEmpty()) {
 			throw new ConstraintViolationException(violations);
-
 		}
 	}
-
+	private void validateBetweenDaysAndIdQuery(BetweenDaysAndIdQuery betweenDaysAndIdQuery) {
+		Set<ConstraintViolation<BetweenDaysAndIdQuery>> violations = validator.validate(betweenDaysAndIdQuery);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+	}
+	private void validateBetweenDaysQuery(BetweenDaysQuery betweenDaysQuery) {
+		Set<ConstraintViolation<BetweenDaysQuery>> violations = validator.validate(betweenDaysQuery);
+		if (!violations.isEmpty()) {
+			throw new ConstraintViolationException(violations);
+		}
+	}
 	public List<ServiceResponse> searchByApplicationId(String applicationid) {
 		return serviceStatusDataBaseDAOImpl.searchByApplicationId(applicationid);
 	}
 
-	public List<ServiceResponse> findByDate(Map<String, String> findByDateQueryParams) {
-		return serviceStatusDataBaseDAOImpl.findByDate(findByDateQueryParams);
+	public List<ServiceResponse> findByDate(Map<String, String> findByDateQueryParams) throws ParseException {
+		BetweenDaysQuery betweenDaysQuery= new BetweenDaysQuery(findByDateQueryParams);
+		logger.info("Validando fechas ingresadas");
+		this.validateBetweenDaysQuery(betweenDaysQuery);
+		logger.info("Fechas validas!!");
+		return serviceStatusDataBaseDAOImpl.findByDate(betweenDaysQuery);
 
 	}
-
-	public List<ServiceResponse> findByIdAndDate(Map<String, String> findByDateQueryParams) {
-		return serviceStatusDataBaseDAOImpl.findByIdAndDate(findByDateQueryParams);
+	public List<ServiceResponse> findByIdAndDate(Map<String, String> findByDateQueryParams) throws ParseException {
+		BetweenDaysAndIdQuery betweenDaysAndIdQuery= new BetweenDaysAndIdQuery(findByDateQueryParams);
+		logger.info("Validando applicationId y fechas ingresadas");
+		this.validateBetweenDaysAndIdQuery(betweenDaysAndIdQuery);
+		logger.info("ApplicationId y fechas validas!!");
+		return serviceStatusDataBaseDAOImpl.findByIdAndDate(betweenDaysAndIdQuery);
 
 	}
 
