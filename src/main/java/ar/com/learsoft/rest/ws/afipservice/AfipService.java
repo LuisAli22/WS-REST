@@ -89,6 +89,10 @@ public class AfipService {
 		}
 	}
 	public List<ServiceResponse> searchByApplicationId(String applicationid) {
+		ApplicationIdAfipServiceQuery applicationIdAfipServiceQuery= new ApplicationIdAfipServiceQuery(); 
+		applicationIdAfipServiceQuery.setApplicationID(applicationid);
+		logger.info("Validando la consulta de chequeo de servicio");
+		this.validateAfipServiceQuery(applicationIdAfipServiceQuery);
 		return serviceStatusDataBaseDAOImpl.searchByApplicationId(applicationid);
 	}
 

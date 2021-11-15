@@ -9,5 +9,6 @@ public class Definitions {
 	public static final String FIRSTDATE_LABEL="firstDate";
 	public static final String SECONDDATE_LABEL="secondDate";
 	public static final String APPLICATIONID_LABEL="applicationId";
+	public static final String INVALID_INPUT_STATUS= "Invalid input";
 	
 }

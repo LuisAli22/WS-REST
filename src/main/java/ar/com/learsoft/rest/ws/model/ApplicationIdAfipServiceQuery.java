@@ -9,8 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ApplicationIdAfipServiceQuery {
-	@NotNull(message = "El identificador de la aplicación No puede ser nulo")
-	@Pattern(regexp = "^[a-z]+$", message = "El identificador de la aplicacion debe ser una cadena en minúscula")
+	@NotNull(message = "No está ingresando applicationid. Actualmente tiene el valor nulo")
+	@Pattern(regexp = "^[a-z]+$", message = "applicationid debe estar formado por letras en minúscula.")
 	private String applicationID;
 
 }
