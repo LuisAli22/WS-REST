@@ -39,7 +39,7 @@ public class AfipService {
 	private ServiceChecker getWsSoapProxy() {
 		URL url = null;
 		try {
-			url = new URL("http://localhost:8080/ws/afipchecker?wsdl");
+			url = new URL("http://localhost:8080/WS-SOAP/ws/afipchecker?wsdl");
 		} catch (MalformedURLException e) {
 
 			e.printStackTrace();
