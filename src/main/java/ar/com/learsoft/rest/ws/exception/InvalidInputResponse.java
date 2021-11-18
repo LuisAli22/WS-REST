@@ -1,7 +1,7 @@
-package ar.com.learsoft.rest.ws.model;
+package ar.com.learsoft.rest.ws.exception;
 
-import java.util.List;
 
+import ar.com.learsoft.rest.ws.util.Definitions;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,7 +12,7 @@ public class InvalidInputResponse extends ServiceResponse{
 	
 
 	public InvalidInputResponse(String message) {
-		super("CLIENTE INCORRECTO");
+		super(Definitions.INVALID_INPUT_STATUS);
 		this.message = message; 
 	}
 
